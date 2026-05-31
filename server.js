@@ -13,6 +13,8 @@ app.use(express.json())
 
 const allowedOrigins = [
     "http://localhost:5173",
+
+    "https://new-vite-vasos-frontend.vercel.app",
     "http://localhost:5174",
     ...(process.env.FRONTEND_URL || "")
         .split(",")
