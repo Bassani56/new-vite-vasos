@@ -3,29 +3,25 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 
-const fs = require("fs")
-const path = require("path")
-
 const Produto = require('./models/Produto')
 
 const app = express()
 app.use(express.json())
+
 const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:5174",
     "https://new-vite-vasos-frontend.vercel.app",
-    "https://casadooleiroo.com.br",          // ← sem barra
+    "https://casadooleiroo.com.br",
     "https://vite-projeto-vasos-jhdf3dso9-bassani56s-projects.vercel.app",
-    "https://vite-projeto-vasos-git-main-bassani56s-projects.vercel.app", // ← sem barra
+    "https://vite-projeto-vasos-git-main-bassani56s-projects.vercel.app",
     ...(process.env.FRONTEND_URL || "")
         .split(",")
-        .map(origin => origin.trim().replace(/\/$/, "")) // ← remove trailing slash
+        .map(origin => origin.trim().replace(/\/$/, ""))
         .filter(Boolean)
 ]
 
-
-
-// Garante que o Vercel/CDN não sirva resposta cacheada para outra origem
+// ✅ Vary ANTES do cors, e tratando OPTIONS (preflight) explicitamente
 app.use((req, res, next) => {
     res.setHeader("Vary", "Origin")
     next()
@@ -36,11 +32,14 @@ app.use(cors({
         if (!origin || allowedOrigins.includes(origin)) {
             return callback(null, true)
         }
-
         return callback(new Error("Origem nao permitida pelo CORS"))
     },
+    credentials: true,          // ✅ adicionado
     optionsSuccessStatus: 200
 }))
+
+// ✅ Responde preflight OPTIONS em todas as rotas
+app.options('*', cors())
 
 async function conectarBanco() {
     if (mongoose.connection.readyState >= 1) {
