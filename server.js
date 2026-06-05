@@ -14,7 +14,8 @@ const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:5174",
     "https://new-vite-vasos-frontend.vercel.app",
-    "https://casadooleiroo.com.br",          // ← sem barra
+    "https://casadooleiroo.com.br",
+    "https://www.casadooleiroo.com.br",          // ← sem barra
     "https://vite-projeto-vasos-jhdf3dso9-bassani56s-projects.vercel.app",
     "https://vite-projeto-vasos-git-main-bassani56s-projects.vercel.app", // ← sem barra
     ...(process.env.FRONTEND_URL || "")
@@ -63,6 +64,9 @@ app.use(async (req, res, next) => {
 })
 
 app.get('/produtos', async (req, res) => {
+    
+    res.setHeader('Cache-Control', 'no-store') 
+
     try {
         const produtos = await Produto.find()
         res.json(produtos)
