@@ -6,6 +6,8 @@ const cors = require('cors')
 const fs = require("fs")
 const path = require("path")
 
+const gerarSlug = require('./utils/slug')
+
 const Produto = require('./models/Produto')
 
 const app = express()
