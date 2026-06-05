@@ -63,8 +63,14 @@ app.use(async (req, res, next) => {
     }
 })
 
+
+app.use((req, res, next) => {
+    res.setHeader('Vary', 'Origin')
+    next()
+})
+
 app.get('/produtos', async (req, res) => {
-    
+
     res.setHeader('Cache-Control', 'no-store') 
 
     try {
@@ -113,6 +119,47 @@ app.post('/relacionados', async (req, res) =>{
     }
 });
 
+app.get('/sitemap.xml', async (req, res) => {
+    try {
+        await conectarBanco()
+
+        const produtos = await Produto.find().lean()
+
+        const baseUrl = 'https://casadooleiroo.com.br'
+
+        let urls = `
+            <url>
+                <loc>${baseUrl}/</loc>
+                <priority>1.0</priority>
+            </url>
+        `
+
+        produtos.forEach((produto) => {
+            const slug = gerarSlug(produto.titulo || 'produto')
+
+            urls += `
+                <url>
+                    <loc>${baseUrl}/produto/${slug}-${produto._id}</loc>
+                    <priority>0.8</priority>
+                </url>
+            `
+        })
+
+        const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+            <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+                ${urls}
+            </urlset>
+        `
+
+        res.setHeader('Content-Type', 'application/xml')
+        res.setHeader('Cache-Control', 'no-store')
+        res.send(sitemap)
+
+    } catch (err) {
+        console.error(err)
+        res.status(500).send('Erro ao gerar sitemap')
+    }
+})
 
 if (require.main === module) {
     const PORT = process.env.PORT || 3000
