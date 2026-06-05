@@ -15,6 +15,7 @@ const allowedOrigins = [
     "http://localhost:5173",
     "https://new-vite-vasos-frontend.vercel.app",
     "https://casadooleiroo.com.br/",
+    "https://vite-projeto-vasos-jhdf3dso9-bassani56s-projects.vercel.app",
     "https://vite-projeto-vasos-git-main-bassani56s-projects.vercel.app/",
     "http://localhost:5174",
     ...(process.env.FRONTEND_URL || "")
