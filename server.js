@@ -137,7 +137,7 @@ app.get('/sitemap.xml', async (req, res) => {
         `
 
         produtos.forEach((produto) => {
-            const slug = gerarSlug(produto.titulo || 'produto')
+            const slug = gerarSlug(produto.titulo_geral  || 'produto')
 
             urls += `
                 <url>
